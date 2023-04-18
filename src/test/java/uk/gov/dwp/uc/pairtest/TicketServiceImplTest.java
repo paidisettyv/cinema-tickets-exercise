@@ -1,14 +1,9 @@
 package uk.gov.dwp.uc.pairtest;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.springframework.util.Assert;
 import thirdparty.paymentgateway.TicketPaymentService;
 import thirdparty.seatbooking.SeatReservationService;
-import uk.gov.dwp.uc.pairtest.TicketServiceImpl;
 import uk.gov.dwp.uc.pairtest.domain.TicketTypeRequest;
 import uk.gov.dwp.uc.pairtest.domain.User;
 import uk.gov.dwp.uc.pairtest.exception.InvalidPurchaseException;
@@ -19,7 +14,7 @@ import static org.mockito.Mockito.times;
 
 public class TicketServiceImplTest {
 
-    private static final User user = new User(1l);
+    private static final User user = new User(1L);
     private TicketTypeRequest[] requests;
     private TicketServiceImpl ticketService;
     @Mock
@@ -53,32 +48,32 @@ public class TicketServiceImplTest {
     @Test
     void Should_NeitherReserveSeatNorMakePaymentAndThrowException_When_NoAdultTicketIsPurchased() {
         requests = new TicketTypeRequest[]{new TicketTypeRequest(TicketTypeRequest.Type.CHILD,2)};
-        Exception exception = assertThrows(InvalidPurchaseException.class, () ->
+        InvalidPurchaseException exception = assertThrows(InvalidPurchaseException.class, () ->
                 ticketService.purchaseTickets(user, requests));
-        assertTrue(((InvalidPurchaseException) exception).getErrorMessage().equals("No Adult Tickets"));
+        assertEquals("No Adult Tickets", exception.getErrorMessage());
 
     }
     @Test
     void Should_ThrowInvalidPurchaseException_When_UserIsNull(){
         requests = new TicketTypeRequest[]{new TicketTypeRequest(TicketTypeRequest.Type.ADULT,2)};
-        Exception exception = assertThrows(InvalidPurchaseException.class, () ->
+        InvalidPurchaseException exception = assertThrows(InvalidPurchaseException.class, () ->
                 ticketService.purchaseTickets(null, requests));
-        assertTrue(((InvalidPurchaseException) exception).getErrorMessage().equals("Invalid Purchase Request"));
+        assertEquals("Invalid Purchase Request", exception.getErrorMessage());
 
     }
 
     @Test
     void Should_ThrowInvalidPurchaseException_When_TicketTypeRequestListIsEmpty() {
         requests = new TicketTypeRequest[]{};
-        Exception exception = assertThrows(InvalidPurchaseException.class, () ->
+        InvalidPurchaseException exception = assertThrows(InvalidPurchaseException.class, () ->
                 ticketService.purchaseTickets(user, requests));
-        assertTrue(((InvalidPurchaseException) exception).getErrorMessage().equals("Invalid Purchase Request"));
+        assertEquals("Invalid Purchase Request",exception.getErrorMessage());
     }
 
     @Test
     void Should_ThrowInvalidPurchaseException_When_TicketTypeRequestIsEmptyAndUserIsNull(){
-        Exception exception = assertThrows(InvalidPurchaseException.class, () ->
-                ticketService.purchaseTickets(null, new TicketTypeRequest[]{}));
-        assertTrue(((InvalidPurchaseException) exception).getErrorMessage().equals("Invalid Purchase Request"));
+        InvalidPurchaseException exception = assertThrows(InvalidPurchaseException.class, () ->
+                ticketService.purchaseTickets(null));
+        assertEquals("Invalid Purchase Request", exception.getErrorMessage());
     }
 }

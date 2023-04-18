@@ -4,8 +4,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import thirdparty.paymentgateway.TicketPaymentService;
 import thirdparty.seatbooking.SeatReservationService;
-import uk.gov.dwp.uc.pairtest.domain.User;
 import uk.gov.dwp.uc.pairtest.domain.TicketTypeRequest;
+import uk.gov.dwp.uc.pairtest.domain.User;
 import uk.gov.dwp.uc.pairtest.exception.InvalidPurchaseException;
 import uk.gov.dwp.uc.pairtest.exception.ThirdPartyCallException;
 
@@ -19,8 +19,8 @@ public class TicketServiceImpl implements TicketService {
     private static final Logger logger = LogManager.getLogger(TicketServiceImpl.class);
     final static int ADULT_TICKET_PRICE = 20;
     final static int CHILD_TICKET_PRICE = 10;
-    private TicketPaymentService paymentService;
-    private SeatReservationService reservationService;
+    private final TicketPaymentService paymentService;
+    private final SeatReservationService reservationService;
 
     public TicketServiceImpl(TicketPaymentService paymentService, SeatReservationService reservationService) {
         this.paymentService = paymentService;
@@ -79,7 +79,7 @@ public class TicketServiceImpl implements TicketService {
     private void makePaymentAndReserveSeats(Long accountId, int totalAmountToPay, int totalSeatsToAllocate) throws ThirdPartyCallException {
         try { paymentService.makePayment(accountId, totalAmountToPay);
         }catch (Exception ex) {
-            logger.error(String.format("Failed making payment of %n for user %d",totalAmountToPay, accountId));
+            logger.error(String.format("Failed making payment of %d for user %d",totalAmountToPay, accountId));
             throw new ThirdPartyCallException(ex.getMessage());
         }
         try { reservationService.reserveSeat(accountId, totalSeatsToAllocate);
