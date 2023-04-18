@@ -1,7 +1,6 @@
 package uk.gov.dwp.uc.pairtest;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import thirdparty.paymentgateway.TicketPaymentService;
 import thirdparty.seatbooking.SeatReservationService;
 import uk.gov.dwp.uc.pairtest.domain.TicketTypeRequest;
@@ -16,7 +15,7 @@ import java.util.Arrays;
  */
 public class TicketServiceImpl implements TicketService {
 
-    private static final Logger logger = LogManager.getLogger(TicketServiceImpl.class);
+    private static final Logger logger = (Logger) LogManager.getLogger(TicketServiceImpl.class);
     final static int ADULT_TICKET_PRICE = 20;
     final static int CHILD_TICKET_PRICE = 10;
     private final TicketPaymentService paymentService;
@@ -25,7 +24,6 @@ public class TicketServiceImpl implements TicketService {
     public TicketServiceImpl(TicketPaymentService paymentService, SeatReservationService reservationService) {
         this.paymentService = paymentService;
         this.reservationService = reservationService;
-        BasicConfigurator.configure();
     }
 
     /**
